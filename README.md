@@ -28,4 +28,21 @@ This repository
 
 For each of the adjustment that we explore, we will create new, parametrized,  functions. This will allow us to easily distinguish between the original code, and the modified code that we created.
 
-The original and new code implementations can be loaded in the `solutions.ipynb
+The original and new code implementations can be loaded in the `solutions.ipynb`
+
+
+## Deliverables
+
+
+
+| Task                                             | Team Member |
+|--------------------------------------------------|-------------|
+| Realizing a baseline solution                    |             |
+| Bringing more elaborate ideas                    | David       |
+| Experiment with fitness function                 | Caspar      |
+| Experiment with subtree crossover                | Marijn      |
+| Experiment with different function/terminal sets | Jurjen      |
+
+
+
+
