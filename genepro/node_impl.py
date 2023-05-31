@@ -95,6 +95,10 @@ class Square(Node):
   def get_output(self, X):
     c_outs = self._get_child_outputs(X)
     return np.square(c_outs[0])
+  
+  def get_output_pt(self, X):
+    c_outs = self._get_child_outputs_pt(X)
+    return torch.square(c_outs[0])
 
 
 class Cube(Node):
@@ -109,6 +113,10 @@ class Cube(Node):
   def get_output(self, X):
     c_outs = self._get_child_outputs(X)
     return np.multiply(np.square(c_outs[0]), c_outs[0])
+  
+  def get_output_pt(self, X):
+    c_outs = self._get_child_outputs_pt(X)
+    return torch.multiply(torch.square(c_outs[0]), c_outs[0])
 
 
 class Sqrt(Node):
@@ -125,6 +133,11 @@ class Sqrt(Node):
     c_outs = self._get_child_outputs(X)
     # implements a protection to avoid arg <= 0
     return np.sqrt(np.abs(c_outs[0]))
+  
+  def get_output_pt(self, X):
+    c_outs = self._get_child_outputs_pt(X)
+    # implements a protection to avoid arg <= 0
+    return torch.sqrt(torch.abs(c_outs[0]))
 
 
 class Log(Node):
@@ -161,6 +174,10 @@ class Exp(Node):
   def get_output(self, X):
     c_outs = self._get_child_outputs(X)
     return np.exp(c_outs[0])
+  
+  def get_output_pt(self, X):
+    c_outs = self._get_child_outputs_pt(X)
+    return torch.exp(c_outs[0])
 
 
 class Sin(Node):
