@@ -157,13 +157,17 @@ class Evolution:
     Generates a random initial population and evaluates it
     """
     # initialize the population
-    self.population = Parallel(n_jobs=self.n_jobs)(
-        delayed(generate_random_multitree)(self.n_trees, 
-          self.internal_nodes, self.leaf_nodes, max_depth=self.init_max_depth )
-        for _ in range(self.pop_size))
+    # self.population = Parallel(n_jobs=self.n_jobs)(
+    #     delayed(generate_random_multitree)(self.n_trees, 
+    #       self.internal_nodes, self.leaf_nodes, max_depth=self.init_max_depth )
+    #     for _ in range(self.pop_size))
+    
+    self.population = [generate_random_multitree(self.n_trees, self.internal_nodes, self.leaf_nodes, max_depth=self.init_max_depth ) for _ in range(self.pop_size)]
 
     # evaluate the trees and store their fitness
-    fitnesses = Parallel(n_jobs=self.n_jobs)(delayed(self.fitness_function)(t) for t in self.population)
+    # fitnesses = Parallel(n_jobs=self.n_jobs)(delayed(self.fitness_function)(t) for t in self.population)
+    fitnesses = [self.fitness_function(t) for t in self.population]
+
     fitnesses = list(map(list, zip(*fitnesses)))
     memories = fitnesses[1]
     memory = memories[0]
@@ -190,24 +194,33 @@ class Evolution:
     sel_fun = self.selection["fun"]
     parents = sel_fun(self.population, self.pop_size, **self.selection["kwargs"])
     # generate offspring
-    offspring_population = Parallel(n_jobs=self.n_jobs)(delayed(generate_offspring)
-      (t, self.crossovers, self.mutations, self.coeff_opts, 
-      parents, self.internal_nodes, self.leaf_nodes,
-      constraints={"max_tree_size": self.max_tree_size}) 
-      for t in parents)
-
+    # offspring_population = Parallel(n_jobs=self.n_jobs)(delayed(generate_offspring)
+    #   (t, self.crossovers, self.mutations, self.coeff_opts, 
+    #   parents, self.internal_nodes, self.leaf_nodes,
+    #   constraints={"max_tree_size": self.max_tree_size}) 
+    #   for t in parents)
+    offspring_population = []
+    for t in parents:
+      offspring = generate_offspring(t, self.crossovers, self.mutations, self.coeff_opts, parents, self.internal_nodes, self.leaf_nodes, constraints={"max_tree_size": self.max_tree_size})
+      offspring_population.append(offspring)
+      
     # evaluate each offspring and store its fitness 
-    fitnesses = Parallel(n_jobs=self.n_jobs)(delayed(self.fitness_function)(t) for t in offspring_population)
-    fitnesses = list(map(list, zip(*fitnesses)))
-    memories = fitnesses[1]
+    # fitnesses = Parallel(n_jobs=self.n_jobs)(delayed(self.fitness_function)(t) for t in offspring_population)
+    # fitnesses = list(map(list, zip(*fitnesses)))
+    # memories = fitnesses[1]
+    fitnesses, memories = [], []
+    for t in offspring_population:
+      fitness, memory = self.fitness_function(t)
+      fitnesses.append(fitness)
+      memories.append(memory)
+
     memory = memories[0]
     for m in range(1,len(memories)):
       memory += memories[m]
 
     self.memory = memory + self.memory
 
-    fitnesses = fitnesses[0]
-
+    # fitnesses = fitnesses[0]
     for i in range(self.pop_size):
       offspring_population[i].fitness = fitnesses[i]
     # store cost
