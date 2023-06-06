@@ -100,6 +100,10 @@ class Square(Node):
     c_outs = self._get_child_outputs_pt(X)
     return torch.square(c_outs[0])
 
+  def get_output_pt(self, X):
+    c_outs = self._get_child_outputs_pt(X)
+    return c_outs[0]**2
+
 
 class Cube(Node):
   def __init__(self):
@@ -137,6 +141,10 @@ class Sqrt(Node):
   def get_output_pt(self, X):
     c_outs = self._get_child_outputs_pt(X)
     # implements a protection to avoid arg <= 0
+    return torch.sqrt(torch.abs(c_outs[0]))
+
+  def get_output_pt(self, X):
+    c_outs = self._get_child_outputs_pt(X)
     return torch.sqrt(torch.abs(c_outs[0]))
 
 
@@ -274,6 +282,7 @@ class Constant(Node, nn.Module):
     self.arity = 0
     self.__value = value
     self.symb = str(value) if value is not None else "const?"
+    self.pt_value = None
 
   def get_value(self):
     if not self.__value:
@@ -285,16 +294,16 @@ class Constant(Node, nn.Module):
     return self.pt_value.item() 
 
   def update_symbol(self):
-      self.symb = str(self.pt_value.item())
-
-  def set_value(self, value : float):
-    self.__value = value   
-    self.symb = str(value)
-    self.pt_value = torch.tensor([self.__value],requires_grad=True)
+    if not self.__value:
+      self.__value = np.random.uniform()*10 - 5 
+      self.symb = str(self.__value)
+      self.pt_value = torch.tensor([self.__value],requires_grad=True)
+      
+    self.symb = str(self.pt_value.item())
 
   def _get_args_repr(self, args):
     # make sure it is initialized
-    self.get_value()
+    self.update_symbol()
     return self.symb
 
   def get_output(self, X : np.ndarray) -> np.ndarray:
@@ -306,3 +315,8 @@ class Constant(Node, nn.Module):
     # make sure it is initialized
     v = self.get_value()
     return self.pt_value.repeat(len(X))
+
+  def set_value(self, value : float):
+    self.__value = value   
+    self.symb = str(value)
+    self.pt_value = torch.tensor([self.__value],requires_grad=True)
