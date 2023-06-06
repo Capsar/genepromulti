@@ -26,9 +26,20 @@ This repository
 
 ## Plan of Attack
 
-For each of the adjustment that we explore, we will create new, parametrized,  functions. This will allow us to easily distinguish between the original code, and the modified code that we created.
+### 1: Test the hypotheses
 
-The original and new code implementations can be loaded in the `solutions.ipynb`
+Firstly, we will test out our hypotheses on different **selection, mutation and crossover** methods.  Using a standard experiment and plotting function, we will settle on the combination of the most promising methods.
+
+### 2: Optimize the evolution Hyperparameters.
+
+The evolution funciton hyperparameters can be seen as a discrete optimization problem. Two options to explore the solution space would be:
+- 1: Grid search or random search
+- 2: Evolutionary optimization (this would be a very cool inception thing to do)
+
+### 3: Coefficient optimization
+
+The final step will be optimizing the coefficients based of the best performing tree we have found using the previous two steps.
+
 
 
 ## Deliverables
