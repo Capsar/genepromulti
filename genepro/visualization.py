@@ -9,7 +9,7 @@ def plot_fitness(fitnesses: np.ndarray, save_path):
     """
     print(fitnesses)
     df = pd.DataFrame(fitnesses).melt()
-    ax = sns.lineplot(data=df, x="variable", y="value")
+    ax = sns.lineplot(data=df, x="generation", y="fitness")
 
     fig = ax.get_figure()
     fig.savefig(save_path)
