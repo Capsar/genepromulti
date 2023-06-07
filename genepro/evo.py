@@ -178,7 +178,9 @@ class Evolution:
     fitnesses = fitnesses[0]
 
     for i in range(self.pop_size):
-      self.population[i].fitness = fitnesses[i]
+      self.population[i].fitness = np.mean(fitnesses[i])
+      self.population[i].fitnesses = fitnesses[i]
+
     # store eval cost
     self.num_evals += self.pop_size
     # store best at initialization
@@ -212,7 +214,9 @@ class Evolution:
     fitnesses = fitnesses[0]
 
     for i in range(self.pop_size):
-      offspring_population[i].fitness = fitnesses[i]
+      offspring_population[i].fitness = np.mean(fitnesses[i]) # / np.std(fitnesses[i])
+      offspring_population[i].fitnesses = fitnesses[i]
+
     # store cost
     self.num_evals += self.pop_size
     # update the population for the next iteration
@@ -240,6 +244,6 @@ class Evolution:
       self._perform_generation()
       # log info
       if self.verbose:
-        print("gen: {},\tbest of gen fitness: {:.3f},\tbest of gen size: {}".format(
-            self.num_gens, self.best_of_gens[-1].fitness, len(self.best_of_gens[-1])
+        print("gen: {},\tbest of gen fitness: {:.3f}+/-{:.3f},\tbest of gen size: {}".format(
+            self.num_gens, self.best_of_gens[-1].fitness, np.std(self.best_of_gens[-1].fitnesses), len(self.best_of_gens[-1])
             ))
