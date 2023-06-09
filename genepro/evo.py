@@ -249,6 +249,6 @@ class Evolution:
       self._perform_generation()
       # log info
       if self.verbose:
-        print("gen: {} ({:.0f}s),\tbest of gen fitness: {:.3f}; reward:{:.3f}+/-{:.3f},\tbest of gen size: {}".format(
-            self.num_gens, time.perf_counter-self.start_time, self.best_of_gens[-1].fitness, np.mean(self.best_of_gens[-1].fitnesses), np.std(self.best_of_gens[-1].fitnesses), len(self.best_of_gens[-1])
+        print("gen: {} ({:.1f}s),\tbest of gen fitness: {:.3f}; reward:{:.3f}+/-{:.3f},\tbest of gen size: {}".format(
+            self.num_gens, time.perf_counter()-self.start_time, self.best_of_gens[-1].fitness, np.mean(self.best_of_gens[-1].fitnesses), np.std(self.best_of_gens[-1].fitnesses), len(self.best_of_gens[-1])
             ))
