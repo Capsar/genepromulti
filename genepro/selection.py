@@ -47,10 +47,14 @@ def elitism_selection(contestants : list, num_to_select : int) -> list:
   """
   Performs elitism selection on the contestants until the given number of selected contestants is reached;
   """
-  sorted_contestants = sorted(contestants, key=lambda x: x.fitness, reverse=True)
+  selected = list()
 
-  return sorted_contestants[:num_to_select]
+  sorted_contestants = sorted(contestants, key=lambda x: x.fitness, reverse=True)
   
+  selected += [deepcopy(contestant) for contestant in sorted_contestants[:num_to_select//2]]
+  selected += [deepcopy(contestant) for contestant in sorted_contestants[:num_to_select//2]]
+
+  return selected
 
 def rank_selection(contestants : list, num_to_select : int) -> list:
   """"

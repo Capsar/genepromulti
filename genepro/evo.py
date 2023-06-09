@@ -158,8 +158,7 @@ class Evolution:
     """
     # initialize the population
     self.population = Parallel(n_jobs=self.n_jobs)(
-        delayed(generate_random_multitree)(self.n_trees, 
-          self.internal_nodes, self.leaf_nodes, max_depth=self.init_max_depth )
+        delayed(generate_random_multitree)(self.n_trees, self.internal_nodes, self.leaf_nodes, max_depth=self.init_max_depth)
         for _ in range(self.pop_size))
 
     for count, individual in enumerate(self.population):
@@ -178,7 +177,10 @@ class Evolution:
     fitnesses = fitnesses[0]
 
     for i in range(self.pop_size):
-      self.population[i].fitness = np.mean(fitnesses[i])
+      std_fitness = np.std(fitnesses[i])
+      mean_fitness = np.mean(fitnesses[i])
+      fitness = mean_fitness - std_fitness
+      self.population[i].fitness = mean_fitness
       self.population[i].fitnesses = fitnesses[i]
 
     # store eval cost
@@ -214,7 +216,10 @@ class Evolution:
     fitnesses = fitnesses[0]
 
     for i in range(self.pop_size):
-      offspring_population[i].fitness = np.mean(fitnesses[i]) # / np.std(fitnesses[i])
+      std_fitness = np.std(fitnesses[i])
+      mean_fitness = np.mean(fitnesses[i])
+      fitness = mean_fitness - std_fitness
+      offspring_population[i].fitness = mean_fitness
       offspring_population[i].fitnesses = fitnesses[i]
 
     # store cost
@@ -234,7 +239,7 @@ class Evolution:
     and the offspring population is used to form the population for the next generation
     """
     # set the start time
-    self.start_time = time.time()
+    self.start_time = time.perf_counter()
 
     self._initialize_population()
 
@@ -244,6 +249,6 @@ class Evolution:
       self._perform_generation()
       # log info
       if self.verbose:
-        print("gen: {},\tbest of gen fitness: {:.3f}+/-{:.3f},\tbest of gen size: {}".format(
-            self.num_gens, self.best_of_gens[-1].fitness, np.std(self.best_of_gens[-1].fitnesses), len(self.best_of_gens[-1])
+        print("gen: {} ({:.0f}s),\tbest of gen fitness: {:.3f}; reward:{:.3f}+/-{:.3f},\tbest of gen size: {}".format(
+            self.num_gens, time.perf_counter-self.start_time, self.best_of_gens[-1].fitness, np.mean(self.best_of_gens[-1].fitnesses), np.std(self.best_of_gens[-1].fitnesses), len(self.best_of_gens[-1])
             ))
