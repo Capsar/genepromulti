@@ -177,10 +177,7 @@ class Evolution:
     fitnesses = fitnesses[0]
 
     for i in range(self.pop_size):
-      std_fitness = np.std(fitnesses[i])
-      mean_fitness = np.mean(fitnesses[i])
-      fitness = mean_fitness - std_fitness
-      self.population[i].fitness = mean_fitness
+      self.population[i].fitness = np.mean(fitnesses[i])
       self.population[i].fitnesses = fitnesses[i]
 
     # store eval cost
@@ -218,8 +215,8 @@ class Evolution:
     for i in range(self.pop_size):
       std_fitness = np.std(fitnesses[i])
       mean_fitness = np.mean(fitnesses[i])
-      fitness = mean_fitness - std_fitness
-      offspring_population[i].fitness = mean_fitness
+      fitness = mean_fitness - len(offspring_population[i]) - std_fitness**0.5
+      offspring_population[i].fitness = fitness
       offspring_population[i].fitnesses = fitnesses[i]
 
     # store cost
