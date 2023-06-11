@@ -216,7 +216,7 @@ class Evolution:
       std_fitness = np.std(fitnesses[i])
       mean_fitness = np.mean(fitnesses[i])
       fitness = mean_fitness - len(offspring_population[i]) - std_fitness**0.5
-      offspring_population[i].fitness = fitness
+      offspring_population[i].fitness = mean_fitness
       offspring_population[i].fitnesses = fitnesses[i]
 
     # store cost
