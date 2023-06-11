@@ -134,5 +134,32 @@ def boltzmann_selection(contestants : list, num_to_select : int, temperature : f
     return selected_contestants
 
 
+def roulette_selection_elitism(contestants : list, num_to_select : int) -> list:
+  """
+  Performs roulette selection on the contestants until the given number of selected contestants is reached;
+  """
+
+  num_elitist = 4
+  num_roulette_selection = num_to_select - num_elitist
+
+  elitists = elitism_selection(contestants, num_to_select=num_elitist)
+
+  total_fitness = np.sum([contestant.fitness for contestant in contestants])
+  probabilities = [contestant.fitness / total_fitness for contestant in contestants]
+  selection = np.random.choice(contestants, p=probabilities, size=num_roulette_selection)
+
+  selected = [deepcopy(contestant) for contestant in selection]
+
+  print(f"Selected: {len(selected)}")
+  print(f"Elitists: {len(elitists)}")
+
+  selected += [deepcopy(elitist) for elitist in elitists]
+
+
+  print(f"Final selected: {len(selected)}")
+
+  return selected
+
+
 def stochastic_universal_sampling():
   pass
