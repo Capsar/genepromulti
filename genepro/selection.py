@@ -150,13 +150,7 @@ def roulette_selection_elitism(contestants : list, num_to_select : int) -> list:
 
   selected = [deepcopy(contestant) for contestant in selection]
 
-  print(f"Selected: {len(selected)}")
-  print(f"Elitists: {len(elitists)}")
-
   selected += [deepcopy(elitist) for elitist in elitists]
-
-
-  print(f"Final selected: {len(selected)}")
 
   return selected
 

@@ -178,10 +178,10 @@ if __name__ == "__main__":
 
     from copy import deepcopy
     import json
-    from genepro.selection import elitism_selection, tournament_selection, roulette_selection, rank_selection, boltzmann_selection
+    from genepro.selection import elitism_selection, tournament_selection, roulette_selection, rank_selection, boltzmann_selection, roulette_selection_elitism
     from genepro.variation import coeff_mutation, subtree_crossover, subtree_mutation
 
-    experiment_name = "sin_sqrt_baseline"
+    experiment_name = "roulette_selection_elitism"
 
     dir_name = "selection_experiments"
 
@@ -198,8 +198,11 @@ if __name__ == "__main__":
         "crossovers": [[{"fun": subtree_crossover, "rate": 0.5}]],
         "mutations": [[{"fun": subtree_mutation, "rate": 0.5}]],
         "coeff_opts": [[{"fun": coeff_mutation, "rate": 0.5}]],
-        "selection": {"fun": tournament_selection, "kwargs": {"tournament_size": 4}},
+        # "selection": {"fun": tournament_selection, "kwargs": {"tournament_size": 4}},
         # "selection": {"fun": roulette_selection},
+        # "selection": {"fun": elitism_selection},
+        # "selection": {"fun": rank_selection},
+        "selection": {"fun": roulette_selection_elitism},
         "n_jobs": 8,
         "verbose": True
     }
