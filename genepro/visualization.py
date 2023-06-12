@@ -33,7 +33,7 @@ def plot_generation_files(npy_files, ax, title_sufix, y_min=-150, y_max=300, ind
     mean_total = np.mean(total_data, axis=(0, 2))
     std_total = np.std(total_data, axis=(0, 2))
     ax.set_ylim(y_min, y_max)
-    ax.plot(mean_total, label=f"Mean Reward of Experiments During {title_sufix}", color=color, linewidth=3)
+    ax.plot(mean_total, label=f"Mean Reward of Experiments During {title_sufix}", color=color, linewidth=2)
     ax.fill_between(np.arange(len(mean_total)), mean_total-std_total, mean_total+std_total, alpha=0.2, color=color)
     # ax.set_title(f'Reward during {title_sufix} of {len(npy_files)} experiments')
     ax.set_xlabel("Generation")
@@ -51,7 +51,8 @@ if __name__ == "__main__":
     output_dir = "./plots"
     # experiment_name = "baseline_exp"
     # experiment_name = "fitness_mean-len-sqrt_std"
-    experiment_name = "elitism_fitness_mean-len-sqrt_std"
+    # experiment_name = "elitism_fitness_mean-len-sqrt_std"
+    experiment_name = "fitness_mean-len-std"
 
     evo_files, test_files, hperparam_files = find_experiment_files(root_dir, experiment_name)
     assert len(evo_files) == len(test_files), "Number of evolution files and test files must be the same"
@@ -63,12 +64,13 @@ if __name__ == "__main__":
     # for i, (evo_file, test_file) in enumerate(zip(evo_files, test_files)):
     #     print(f"Experiment {i}: {evo_file} - {test_file}")
  
-    fig, ax = plt.subplots(figsize=(20, 10))
+    fig, ax = plt.subplots(figsize=(10, 5))
     plot_generation_files(evo_files, ax, 'Evolution', color='tab:red')
     plot_generation_files(test_files, ax, 'Test', color='tab:blue')
-    # fig.suptitle(f"Best Gen Reward with {len(evo_files)} Experiments for Baseline")
+    fig.suptitle(f"Best Gen Reward with {len(evo_files)} Experiments for Baseline")
     # fig.suptitle(f"Best Gen Reward with {len(evo_files)} Experiments for Fitness Function: mean(rewards) - len(pop) - sqrt(std(rewards))")
-    fig.suptitle(f"Best Gen Reward with {len(evo_files)} Experiments for Elitism with Fitness Function: mean(rewards) - len(pop) - sqrt(std(rewards))")
+    # fig.suptitle(f"Best Gen Reward with {len(evo_files)} Experiments for Elitism with Fitness Function: mean(rewards) - len(pop) - sqrt(std(rewards))")
+    fig.suptitle(f"Best Gen Reward with {len(evo_files)} Experiments for Fitness Function: mean(rewards) - len(pop) - std(rewards)")
     fig.tight_layout()
     plt.savefig(os.path.join(output_dir, f"{experiment_name}.png"))
     plt.close()
