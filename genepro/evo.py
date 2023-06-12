@@ -88,6 +88,7 @@ class Evolution:
   """
   def __init__(self,
     # required settings
+    rollout_function : Callable[[Node], float],
     fitness_function : Callable[[Node], float],
     internal_nodes : list,
     leaf_nodes : list,
@@ -165,7 +166,7 @@ class Evolution:
       individual.get_readable_repr()
 
     # evaluate the trees and store their fitness
-    fitnesses = Parallel(n_jobs=self.n_jobs)(delayed(self.fitness_function)(t) for t in self.population)
+    fitnesses = Parallel(n_jobs=self.n_jobs)(delayed(self.rollout_function)(t) for t in self.population)
     fitnesses = list(map(list, zip(*fitnesses)))
     memories = fitnesses[1]
     memory = memories[0]
@@ -177,7 +178,7 @@ class Evolution:
     fitnesses = fitnesses[0]
 
     for i in range(self.pop_size):
-      self.population[i].fitness = np.mean(fitnesses[i])
+      self.population[i].fitness = self.fitness_function(fitnesses[i], self.population[i])
       self.population[i].fitnesses = fitnesses[i]
 
     # store eval cost
@@ -201,7 +202,7 @@ class Evolution:
       for t in parents)
 
     # evaluate each offspring and store its fitness 
-    fitnesses = Parallel(n_jobs=self.n_jobs)(delayed(self.fitness_function)(t) for t in offspring_population)
+    fitnesses = Parallel(n_jobs=self.n_jobs)(delayed(self.rollout_function)(t) for t in offspring_population)
     fitnesses = list(map(list, zip(*fitnesses)))
     memories = fitnesses[1]
     memory = memories[0]
@@ -213,10 +214,7 @@ class Evolution:
     fitnesses = fitnesses[0]
 
     for i in range(self.pop_size):
-      std_fitness = np.std(fitnesses[i])
-      mean_fitness = np.mean(fitnesses[i])
-      fitness = mean_fitness - len(offspring_population[i]) - std_fitness**0.5
-      offspring_population[i].fitness = mean_fitness
+      offspring_population[i].fitness = self.fitness_function(fitnesses[i], offspring_population[i])
       offspring_population[i].fitnesses = fitnesses[i]
 
     # store cost
