@@ -10,6 +10,12 @@ class Multitree(nn.Module):
     self.n_trees = n_trees
     self.children = []
 
+  def get_output(self, x):
+    output = []
+    for child in self.children:
+      output.append(np.reshape(child.get_output(x), (-1, 1)))
+    return np.concatenate(output, axis=1)
+
   def get_output_pt(self, x):
     output = []
     for child in self.children:

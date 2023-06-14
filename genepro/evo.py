@@ -88,6 +88,7 @@ class Evolution:
   """
   def __init__(self,
     # required settings
+    rollout_function : Callable[[Node], float],
     fitness_function : Callable[[Node], float],
     internal_nodes : list,
     leaf_nodes : list,
@@ -158,15 +159,14 @@ class Evolution:
     """
     # initialize the population
     self.population = Parallel(n_jobs=self.n_jobs)(
-        delayed(generate_random_multitree)(self.n_trees, 
-          self.internal_nodes, self.leaf_nodes, max_depth=self.init_max_depth )
+        delayed(generate_random_multitree)(self.n_trees, self.internal_nodes, self.leaf_nodes, max_depth=self.init_max_depth)
         for _ in range(self.pop_size))
 
     for count, individual in enumerate(self.population):
       individual.get_readable_repr()
 
     # evaluate the trees and store their fitness
-    fitnesses = Parallel(n_jobs=self.n_jobs)(delayed(self.fitness_function)(t) for t in self.population)
+    fitnesses = Parallel(n_jobs=self.n_jobs)(delayed(self.rollout_function)(t) for t in self.population)
     fitnesses = list(map(list, zip(*fitnesses)))
     memories = fitnesses[1]
     memory = memories[0]
@@ -178,7 +178,9 @@ class Evolution:
     fitnesses = fitnesses[0]
 
     for i in range(self.pop_size):
-      self.population[i].fitness = fitnesses[i]
+      self.population[i].fitness = self.fitness_function(fitnesses[i], self.population[i])
+      self.population[i].fitnesses = fitnesses[i]
+
     # store eval cost
     self.num_evals += self.pop_size
     # store best at initialization
@@ -200,7 +202,7 @@ class Evolution:
       for t in parents)
 
     # evaluate each offspring and store its fitness 
-    fitnesses = Parallel(n_jobs=self.n_jobs)(delayed(self.fitness_function)(t) for t in offspring_population)
+    fitnesses = Parallel(n_jobs=self.n_jobs)(delayed(self.rollout_function)(t) for t in offspring_population)
     fitnesses = list(map(list, zip(*fitnesses)))
     memories = fitnesses[1]
     memory = memories[0]
@@ -212,7 +214,9 @@ class Evolution:
     fitnesses = fitnesses[0]
 
     for i in range(self.pop_size):
-      offspring_population[i].fitness = fitnesses[i]
+      offspring_population[i].fitness = self.fitness_function(fitnesses[i], offspring_population[i])
+      offspring_population[i].fitnesses = fitnesses[i]
+
     # store cost
     self.num_evals += self.pop_size
     # update the population for the next iteration
@@ -230,7 +234,7 @@ class Evolution:
     and the offspring population is used to form the population for the next generation
     """
     # set the start time
-    self.start_time = time.time()
+    self.start_time = time.perf_counter()
 
     self._initialize_population()
 
@@ -240,6 +244,6 @@ class Evolution:
       self._perform_generation()
       # log info
       if self.verbose:
-        print("gen: {},\tbest of gen fitness: {:.3f},\tbest of gen size: {}".format(
-            self.num_gens, self.best_of_gens[-1].fitness, len(self.best_of_gens[-1])
+        print("gen: {} ({:.1f}s),\tbest of gen fitness: {:.3f}; reward:{:.3f}+/-{:.3f},\tbest of gen size: {}".format(
+            self.num_gens, time.perf_counter()-self.start_time, self.best_of_gens[-1].fitness, np.mean(self.best_of_gens[-1].fitnesses), np.std(self.best_of_gens[-1].fitnesses), len(self.best_of_gens[-1])
             ))

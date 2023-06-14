@@ -42,3 +42,49 @@ def tournament_selection(contestants : list, num_to_select : int, tournament_siz
 
   return selected
  
+ # ADDED SELECTION FUNCTIONS
+def elitism_selection(contestants : list, num_to_select : int) -> list:
+  """
+  Performs elitism selection on the contestants until the given number of selected contestants is reached;
+  """
+  selected = list()
+
+  sorted_contestants = sorted(contestants, key=lambda x: x.fitness, reverse=True)
+  
+  selected += [deepcopy(contestant) for contestant in sorted_contestants[:num_to_select//2]]
+  selected += [deepcopy(contestant) for contestant in sorted_contestants[:num_to_select//2]]
+
+  return selected
+
+def rank_selection(contestants : list, num_to_select : int) -> list:
+  """"
+  Performs rank selection on the contestants until the given number of selected contestants is reached;
+  
+  """
+  ranked_contestants = sorted(contestants, key=lambda x: x.fitness, reverse=True)
+  
+  proportional_fitness = [i / len(ranked_contestants) for i in range(1, len(ranked_contestants) + 1)]
+  total_fitness = np.sum([fitness for fitness in proportional_fitness])
+
+  probabilities = [fitness / total_fitness for fitness in proportional_fitness]
+
+  return np.random.choice(contestants, p=probabilities, size=num_to_select)
+  
+
+def roulette_selection(contestants : list, num_to_select : int) -> list:
+  """
+  Performs roulette selection on the contestants until the given number of selected contestants is reached;
+  """
+
+  total_fitness = np.sum([contestant.fitness for contestant in contestants])
+
+  probabilities = [contestant.fitness / total_fitness for contestant in contestants]
+
+  return np.random.choice(contestants, p=probabilities, size=num_to_select)
+    
+
+def boltzmann_selection():
+  pass
+
+def stochastic_universal_sampling():
+  pass
