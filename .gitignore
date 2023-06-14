@@ -162,3 +162,4 @@ cython_debug/
 *.pickle
 
 .vscode/launch.json
+experiments

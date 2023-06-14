@@ -1,31 +1,34 @@
 from genepro.node import Node
 from genepro.node_impl import Feature, Constant, Times
-
-import sys
-sys.setrecursionlimit(3000)
+from copy import deepcopy
 
 from genepro.node import Node
 from genepro.node_impl import Feature, Constant, Times
 
-def traverse_and_invert_iter(node: Node, feature_ids: list[int]):
-    stack = [node]
+def traverse_and_invert_iter(tree: Node, feature_ids: list[int]):
+    new_tree = deepcopy(tree)
+    stack = [new_tree]
 
     while stack:
-        current_node = stack.pop()
+        n = stack.pop()
 
-        if current_node.arity == 0:
-            if isinstance(current_node, Feature) and current_node.id in feature_ids:
-                new_node = Times()
-                child_node = Feature(current_node.id)
-                inverse_node = Constant(-1)
+        if n.arity == 0:
+            if isinstance(n, Feature) and n.id in feature_ids:
+                new_node = deepcopy(Times())
+                child_node = deepcopy(Feature(n.id))
+                inverse_node = deepcopy(Constant(value=-1.0))
                 new_node.insert_child(child_node)
                 new_node.insert_child(inverse_node)
 
-                parent_node = current_node.parent
-                parent_node.detach_child(current_node)
-                parent_node.insert_child(new_node)
+                p = n.parent
+                i = p.detach_child(n)
+                p.insert_child(new_node, i)
+
         else:
-            stack.extend(current_node._children)
+            stack.extend(n._children)
+
+    return new_tree
+
 
 
 def traverse_and_invert(node: Node, feature_ids: list[int]):
