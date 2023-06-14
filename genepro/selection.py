@@ -98,7 +98,11 @@ def roulette_selection(contestants : list, num_to_select : int) -> list:
 
   probabilities = [contestant.fitness / total_fitness for contestant in contestants]
 
-  return np.random.choice(contestants, p=probabilities, size=num_to_select)
+  selection = np.random.choice(contestants, p=probabilities, size=num_to_select)
+    
+  selected = [deepcopy(contestant) for contestant in selection]
+
+  return selected
 
 
 def boltzmann_selection(contestants : list, num_to_select : int, temperature : float) -> list:
