@@ -22,10 +22,10 @@ def test_traverse_and_invert():
 
 
     # Create a copy of the base tree
-    inverted_tree = deepcopy(base_tree)
+    copied_tree = deepcopy(base_tree)
     
     # Invert the tree
-    traverse_and_invert_iter(inverted_tree, [0,2,4,5,6,7])
+    inverted_tree = traverse_and_invert_iter(copied_tree, [0,2,4,5,6,7])
 
 
 

@@ -16,13 +16,17 @@ def traverse_and_invert_iter(tree: Node, feature_ids: list[int]):
             if isinstance(n, Feature) and n.id in feature_ids:
                 new_node = deepcopy(Times())
                 child_node = deepcopy(Feature(n.id))
-                inverse_node = deepcopy(Constant(value=-1.0))
+                inverse_node = deepcopy(Constant())
+                inverse_node.set_value(float(-1))
                 new_node.insert_child(child_node)
                 new_node.insert_child(inverse_node)
 
                 p = n.parent
-                i = p.detach_child(n)
-                p.insert_child(new_node, i)
+                if p:
+                    i = p.detach_child(n)
+                    p.insert_child(new_node, i)
+                else:
+                    new_tree = new_node
 
         else:
             stack.extend(n._children)
