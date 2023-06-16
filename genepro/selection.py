@@ -55,20 +55,38 @@ def elitism_selection(contestants : list, num_to_select : int) -> list:
   selected += [deepcopy(contestant) for contestant in sorted_contestants[:num_to_select//2]]
 
   return selected
+  
 
 def rank_selection(contestants : list, num_to_select : int) -> list:
-  """"
-  Performs rank selection on the contestants until the given number of selected contestants is reached;
-  
-  """
-  ranked_contestants = sorted(contestants, key=lambda x: x.fitness, reverse=True)
-  
-  proportional_fitness = [i / len(ranked_contestants) for i in range(1, len(ranked_contestants) + 1)]
-  total_fitness = np.sum([fitness for fitness in proportional_fitness])
+    """"
+    Performs rank selection on the contestants until the given number of selected contestants is reached;
 
-  probabilities = [fitness / total_fitness for fitness in proportional_fitness]
+    """
+    selected = list()
+    ranked_contestants = sorted(contestants, key=lambda x: x.fitness)
 
-  return np.random.choice(contestants, p=probabilities, size=num_to_select)
+    proportional_fitness = [i / len(ranked_contestants) for i in range(1, len(ranked_contestants) + 1)]
+
+    proportional_fitness = []
+    for i in range(1, len(ranked_contestants) + 1):
+        if i == 1:
+            proportional_fitness.append(i / len(ranked_contestants))
+        else:
+            if ranked_contestants[i-1].fitness == ranked_contestants[i-2].fitness:
+                proportional_fitness.append((i-1) / len(ranked_contestants))
+            else:
+                proportional_fitness.append(i / len(ranked_contestants))
+
+
+    total_fitness = np.sum([fitness for fitness in proportional_fitness])
+
+    probabilities = [fitness / total_fitness for fitness in proportional_fitness]
+
+    selection = np.random.choice(ranked_contestants, p=probabilities, size=num_to_select)
+    
+    selected += [deepcopy(contestant) for contestant in selection]
+
+    return selected
   
 
 def roulette_selection(contestants : list, num_to_select : int) -> list:
@@ -76,15 +94,78 @@ def roulette_selection(contestants : list, num_to_select : int) -> list:
   Performs roulette selection on the contestants until the given number of selected contestants is reached;
   """
 
-  total_fitness = np.sum([contestant.fitness for contestant in contestants])
+  fitnesses = np.array([contestant.fitness for contestant in contestants])
+  bias = -np.min(fitnesses)
 
-  probabilities = [contestant.fitness / total_fitness for contestant in contestants]
+  if bias < 0:
+     bias = 0
 
-  return np.random.choice(contestants, p=probabilities, size=num_to_select)
+  fitnesses += bias
+
+  total_fitness = np.sum(fitnesses)
+
+  probabilities = [(contestant.fitness + bias) / total_fitness for contestant in contestants]
+
+  selection = np.random.choice(contestants, p=probabilities, size=num_to_select)
     
+  selected = [deepcopy(contestant) for contestant in selection]
 
-def boltzmann_selection():
-  pass
+  return selected
+
+
+def boltzmann_selection(contestants : list, num_to_select : int, temperature : float) -> list:
+    """
+    Performs Boltzmann selection on the contestants until the given number of selected contestants is reached,
+    using the specified temperature.
+
+    Args:
+        contestants: A list of contestants.
+        num_to_select: The number of contestants to select.
+        temperature: The temperature parameter for Boltzmann selection.
+
+    Returns:
+        A list of selected contestants.
+    """
+    # temperature = .5
+
+    fitness_values = [contestant.fitness for contestant in contestants]
+
+    # Calculate the scaled fitness values using Boltzmann distribution
+    scaled_fitness_values = [np.exp(fitness_value / temperature) for fitness_value in fitness_values]
+
+
+    # Calculate the total scaled fitness
+    total_scaled_fitness = np.sum(scaled_fitness_values)
+
+    # Calculate the selection probabilities
+    probabilities = scaled_fitness_values / total_scaled_fitness
+
+    # Select contestants based on the probabilities
+    selected_contestants = np.random.choice(contestants, size=num_to_select, p=probabilities)
+
+    return selected_contestants
+
+
+def roulette_selection_elitism(contestants : list, num_to_select : int) -> list:
+  """
+  Performs roulette selection on the contestants until the given number of selected contestants is reached;
+  """
+
+  num_elitist = 4
+  num_roulette_selection = num_to_select - num_elitist
+
+  elitists = elitism_selection(contestants, num_to_select=num_elitist)
+
+  total_fitness = np.sum([contestant.fitness for contestant in contestants])
+  probabilities = [contestant.fitness / total_fitness for contestant in contestants]
+  selection = np.random.choice(contestants, p=probabilities, size=num_roulette_selection)
+
+  selected = [deepcopy(contestant) for contestant in selection]
+
+  selected += [deepcopy(elitist) for elitist in elitists]
+
+  return selected
+
 
 def stochastic_universal_sampling():
   pass

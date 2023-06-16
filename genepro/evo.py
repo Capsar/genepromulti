@@ -226,6 +226,66 @@ class Evolution:
     best = self.population[np.argmax([t.fitness for t in self.population])]
     self.best_of_gens.append(deepcopy(best))
 
+  def _perform_generation_elitism(self):
+    """
+    Performs one generation, which consists of parent selection, offspring generation, and fitness evaluation
+    """
+    # select promising parents
+    sel_fun = self.selection["fun"]
+    parents = sel_fun(self.population, self.pop_size - 4, **self.selection["kwargs"])
+    # generate offspring
+    offspring_population = Parallel(n_jobs=self.n_jobs)(delayed(generate_offspring)
+      (t, self.crossovers, self.mutations, self.coeff_opts, 
+      parents, self.internal_nodes, self.leaf_nodes,
+      constraints={"max_tree_size": self.max_tree_size}) 
+      for t in parents)
+    
+    # Added code:
+    num_parents = 8
+    best_fitness_index = np.argmax([parent.fitness for parent in parents])
+    sorted_parents = parents.copy()
+    sorted_parents.sort(key=lambda x: x.fitness, reverse=True)
+    best_parents = sorted_parents[:num_parents]
+
+    # best_parent = parents[best_fitness_index]
+    # print(f"Fitness of best parent from previous gen: {best_parents.fitness}")
+    # print("---------")
+    print(len(offspring_population))
+    offspring_population = offspring_population + best_parents
+    print(len(offspring_population))
+
+    # End added code
+
+    # evaluate each offspring and store its fitness 
+    fitnesses = Parallel(n_jobs=self.n_jobs)(delayed(self.fitness_function)(t) for t in offspring_population)
+    fitnesses = list(map(list, zip(*fitnesses)))
+    memories = fitnesses[1]
+    memory = memories[0]
+    for m in range(1,len(memories)):
+      memory += memories[m]
+
+    self.memory = memory + self.memory
+
+    print(f"Memory: {self.memory}")
+
+    fitnesses = fitnesses[0]
+
+    for i in range(self.pop_size):
+      std_fitness = np.std(fitnesses[i])
+      mean_fitness = np.mean(fitnesses[i])
+      fitness = mean_fitness - len(offspring_population[i]) - std_fitness**0.5
+      offspring_population[i].fitness = fitness
+      offspring_population[i].fitnesses = fitnesses[i]
+
+    # store cost
+    self.num_evals += self.pop_size
+    # update the population for the next iteration
+    self.population = offspring_population
+    # update info
+    self.num_gens += 1
+    best = self.population[np.argmax([t.fitness for t in self.population])]
+    self.best_of_gens.append(deepcopy(best))
+
   def evolve(self):
     """
     Runs the evolution until a termination criterion is met;
@@ -242,6 +302,7 @@ class Evolution:
     while not self._must_terminate():
       # perform one generation
       self._perform_generation()
+      # self._perform_generation_elitism()
       # log info
       if self.verbose:
         print("gen: {} ({:.1f}s),\tbest of gen fitness: {:.3f}; reward:{:.3f}+/-{:.3f},\tbest of gen size: {}".format(
