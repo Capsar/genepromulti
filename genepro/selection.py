@@ -27,8 +27,8 @@ def tournament_selection(contestants : list, num_to_select : int, tournament_siz
   num_parses = num_to_select // num_selected_per_parse
 
   # assert quantities are compatible
-  # assert n / tournament_size == num_selected_per_parse, "Number of contestants {} is not a multiple of tournament size {}".format(n,tournament_size)
-  # assert num_to_select / num_selected_per_parse == num_parses
+  assert n / tournament_size == num_selected_per_parse, "Number of contestants {} is not a multiple of tournament size {}".format(n,tournament_size)
+  assert num_to_select / num_selected_per_parse == num_parses
  
   for _ in range(num_parses):
     # shuffle
@@ -94,9 +94,17 @@ def roulette_selection(contestants : list, num_to_select : int) -> list:
   Performs roulette selection on the contestants until the given number of selected contestants is reached;
   """
 
-  total_fitness = np.sum([contestant.fitness for contestant in contestants])
+  fitnesses = np.array([contestant.fitness for contestant in contestants])
+  bias = -np.min(fitnesses)
 
-  probabilities = [contestant.fitness / total_fitness for contestant in contestants]
+  if bias < 0:
+     bias = 0
+
+  fitnesses += bias
+
+  total_fitness = np.sum(fitnesses)
+
+  probabilities = [(contestant.fitness + bias) / total_fitness for contestant in contestants]
 
   selection = np.random.choice(contestants, p=probabilities, size=num_to_select)
     
