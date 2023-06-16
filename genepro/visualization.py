@@ -52,7 +52,10 @@ if __name__ == "__main__":
     # experiment_name = "baseline_exp"
     # experiment_name = "fitness_mean-len-sqrt_std"
     # experiment_name = "elitism_fitness_mean-len-sqrt_std"
-    experiment_name = "fitness_mean-len-std"
+    # experiment_name = "fitness_mean-len-std"
+    # experiment_name = "fitness_mean-len-quarter_std"
+    # experiment_name = "fitness_discounted_return"
+    experiment_name = "fitness_discounted_return_len_sqrt_std"
 
     evo_files, test_files, hperparam_files = find_experiment_files(root_dir, experiment_name)
     assert len(evo_files) == len(test_files), "Number of evolution files and test files must be the same"
@@ -67,10 +70,13 @@ if __name__ == "__main__":
     fig, ax = plt.subplots(figsize=(10, 5))
     plot_generation_files(evo_files, ax, 'Evolution', color='tab:red')
     plot_generation_files(test_files, ax, 'Test', color='tab:blue')
-    fig.suptitle(f"Best Gen Reward with {len(evo_files)} Experiments for Baseline")
+    # fig.suptitle(f"Best Gen Reward with {len(evo_files)} Experiments for Baseline")
     # fig.suptitle(f"Best Gen Reward with {len(evo_files)} Experiments for Fitness Function: mean(rewards) - len(pop) - sqrt(std(rewards))")
     # fig.suptitle(f"Best Gen Reward with {len(evo_files)} Experiments for Elitism with Fitness Function: mean(rewards) - len(pop) - sqrt(std(rewards))")
-    fig.suptitle(f"Best Gen Reward with {len(evo_files)} Experiments for Fitness Function: mean(rewards) - len(pop) - std(rewards)")
+    # fig.suptitle(f"Best Gen Reward with {len(evo_files)} Experiments for Fitness Function: mean(rewards) - len(pop) - std(rewards)")
+    # fig.suptitle(f"Best Gen Reward with {len(evo_files)} Experiments for Fitness Function: discounted return with decay rate 0.99")
+    fig.suptitle(f"Best Gen Reward with {len(evo_files)} Experiments for Fitness Function: d_return - len(pop) - sqrt(std(d_return))")
+    
     fig.tight_layout()
     plt.savefig(os.path.join(output_dir, f"{experiment_name}.png"))
     plt.close()

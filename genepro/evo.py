@@ -179,7 +179,7 @@ class Evolution:
 
     for i in range(self.pop_size):
       self.population[i].fitness = self.fitness_function(fitnesses[i], self.population[i])
-      self.population[i].fitnesses = fitnesses[i]
+      self.population[i].fitnesses = np.sum(fitnesses[i], axis=1)
 
     # store eval cost
     self.num_evals += self.pop_size
@@ -215,7 +215,7 @@ class Evolution:
 
     for i in range(self.pop_size):
       offspring_population[i].fitness = self.fitness_function(fitnesses[i], offspring_population[i])
-      offspring_population[i].fitnesses = fitnesses[i]
+      offspring_population[i].fitnesses = np.sum(fitnesses[i], axis=1)
 
     # store cost
     self.num_evals += self.pop_size
