@@ -3,6 +3,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
+# parse args for experiment name
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument('--experiment_name', type=str, default="fitness_mean-len-std")
+
+
 def find_experiment_files(root_dir, folder_prefix):
     evo_files = []
     test_files = []
@@ -56,6 +62,10 @@ if __name__ == "__main__":
     # experiment_name = "fitness_mean-len-quarter_std"
     # experiment_name = "fitness_discounted_return"
     experiment_name = "fitness_discounted_return_len_sqrt_std"
+
+
+    args = parser.parse_args()
+    experiment_name = args.experiment_name
 
     evo_files, test_files, hperparam_files = find_experiment_files(root_dir, experiment_name)
     assert len(evo_files) == len(test_files), "Number of evolution files and test files must be the same"
