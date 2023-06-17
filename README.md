@@ -72,6 +72,7 @@ The repository consists of the following files with corresponding descriptions:
 - ```util.py```: Utilisation file. No changes were made here.
 - ```variation.py```: Variation file. Changes were added between #BEGIN OWN CHANGES and #END OWN CHANGES.
 - ```visualization.py```: Visualization file for plotting the results. This file was created by us.
+- `thruster_symmetry.py`: File containing function for swapping out selected feature nodes to achieve symmetry (as explained above)
 
  
 ## Installation guide
