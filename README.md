@@ -38,13 +38,13 @@ I plan to create a function that will create a symmetric tree from a given tree.
 In this context, symmetry is not defined in terms of the tree structure, but as the multiplication of the symmetrical features with -1.
 Concretely, the function will take a tree and a list of features that should be symmetrical.
 It will then create a copy of this tree, but swap each of the features (F) in the list with a subtree of the form:
-
+```
      x
      
     / \
     
-   -1  F
-   
+  -1    F
+```   
 ### Modifying the multitree
 
 To get this to work, we will have to create a multitree of three trees instead of four.
