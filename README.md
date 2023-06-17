@@ -86,6 +86,11 @@ git clone https://github.com/Capsar/genepromulti.git
 ```
 Install the required dependencies by following these steps:
 
+> **_NOTE:_**  Conda does not show a progress bar.  The size of the needed packages is quite large, meaning you may have to wait a while for all the packages to load.
+
+
 - navigate to the folder in which you installed the repository: ``cd PATH/TO/REPOSITORY``
-- Create new conda environment: ```conda env create --name EA_group11 -f requirements.txt```
+- Create new conda environment: 
+     - Windows: ```conda env create --name EA_group11 -f requirements.txt```
+     - Linux: `conda env create -f requirements_linux.txt`
 - Activate the new conda environment ```conda activate EA_group11```
