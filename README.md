@@ -2,7 +2,8 @@
 
 # <div align='center'> genepromulti </div>
 #### <div align='center'><i>Forked project about evolving the Lunar Lander with EAs and Gradient-Based Optimisation </i></div>
-## Thruster Symmetry
+
+
 
 ### <div align ='center'> Group 011:</div>
 #### <div align='center'>Ben Jacobs: 4713761 </br> Caspar Meijer: 4719298 </br> David Janssen: 4731268 </br> Marijn de Rijk: 4888871 </br> Jurjen Scharringa: 4708652  </div>
