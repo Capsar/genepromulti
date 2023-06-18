@@ -16,8 +16,9 @@ The current implementation of the multitree genetic program does not take symmet
 If there was a way to make the trees corresponding with the respective chance of fireing the left and right thruster symmetric, we would have one less tree per individual (3 vs 4), theoretically resulting in a 25% reduction in computing resources needed to run evolution.
 
 An important thing to note is that not all of the features in the observation space contribute to the symmetry.
-The observation space of the lunar lander is a vector of the following features:
+The observation space of the lunar lander is a vector of the following features. of which a subset will be inverted to create symmetry between the left and right thrusters.
 
+<div align ='center'> 
 | feature           | symmery? |
 |-------------------|----------|
 | x position        | yes      |
@@ -26,32 +27,9 @@ The observation space of the lunar lander is a vector of the following features:
 | y velocity        | no       |
 | angle             | yes      |
 | angular velocity  | yes      |
-| left leg contact  | ?        |
-| right leg contact | ?        |
-
-I am not sure if the contribution of the leg contact features to the symmetry should be considered.
-
-
-### Plan of implementation
-
-I plan to create a function that will create a symmetric tree from a given tree.
-In this context, symmetry is not defined in terms of the tree structure, but as the multiplication of the symmetrical features with -1.
-Concretely, the function will take a tree and a list of features that should be symmetrical.
-It will then create a copy of this tree, but swap each of the features (F) in the list with a subtree of the form:
-```
-     x
-     
-    / \
-    
-  -1    F
-```   
-### Modifying the multitree
-
-To get this to work, we will have to create a multitree of three trees instead of four.
-The creating of the symmetrical tree will be done at the moment an action is chosen.
-
-
-
+| left leg contact  | yes      |
+| right leg contact | yes      |
+</div>
 
 
 This repository 
