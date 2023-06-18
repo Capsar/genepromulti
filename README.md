@@ -18,7 +18,6 @@ If there was a way to make the trees corresponding with the respective chance of
 An important thing to note is that not all of the features in the observation space contribute to the symmetry.
 The observation space of the lunar lander is a vector of the following features. of which a subset will be inverted to create symmetry between the left and right thrusters.
 
-<div align ='center'> 
 | feature           | symmery? |
 |-------------------|----------|
 | x position        | yes      |
@@ -29,7 +28,6 @@ The observation space of the lunar lander is a vector of the following features.
 | angular velocity  | yes      |
 | left leg contact  | yes      |
 | right leg contact | yes      |
-</div>
 
 
 This repository 
