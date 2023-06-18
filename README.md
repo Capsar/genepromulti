@@ -13,6 +13,7 @@ The aim of this project is to evolve the Lunar Lander problem using Evolutionary
 This file will contain the following contents:
 - Content description
 - Installation guide
+- Results
 
 ## Content description
 The repository consists of the following files with corresponding descriptions:
@@ -48,3 +49,10 @@ Install the required dependencies by following these steps:
      - Windows: ```conda env create --name EA_group11 -f requirements.txt```
      - Linux: `conda env create -f requirements_linux.txt`
 - Activate the new conda environment ```conda activate EA_group11```
+
+## Results
+The GIFs below show the results of various experiments done within this project. 
+
+baseline lander
+coefficient optimised lander
+symmetry lander
