@@ -60,11 +60,14 @@ Install the required dependencies by following these steps:
 The GIFs below show the results of various experiments done within this project. 
 
 ![](baseline_lander.gif)
-Result of baseline
+
+> Result of baseline
 
 ![](symmetry_lander.gif)
-Result of symmetry experiment
+
+> Result of symmetry experiment
 
 ![](coef_opt_lander.gif)
-Result of coefficient optimisation experiment
+
+> Result of coefficient optimisation experiment
 
